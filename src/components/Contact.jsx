@@ -26,19 +26,19 @@ const Contact = () => {
 
     setForm({...form, [name]: value})
   }
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
 
     emailjs.send(
-      'service_p06tsvv', 
-      'template_f3vydeh', 
+      'service_p06tsvv',
+      'template_f3vydeh',
       {
         from_name: form.name,
-        to_name: 'Anayat',
+        to_name: 'André',
         from_email: form.email,
-        to_email: 'anayat0khan@gmail.com',
+        to_email: 'andrelopes.professional@gmail.com',
         message: form.message
       },
       'u9pZHshJVbocExEf9'
@@ -63,7 +63,7 @@ const Contact = () => {
         <motion.div
           variants={slideIn('left', 'tween', 0.2, 1)}
           className="flex-[0.75] bg-black-100 p-8 rounded-2xl"
-        > 
+        >
             <p className={styles.sectionSubText}>Get in touch</p>
             <h3 className={styles.sectionHeadText}>Contact.</h3>
 

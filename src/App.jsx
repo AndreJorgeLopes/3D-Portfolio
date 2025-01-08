@@ -1,28 +1,27 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { About, Contact, Experience, Feedbacks, Hero, Navbar, Tech, Works, StarsCanvas } from './components';
+import { About, Contact, Experience, Hero, Navbar, Tech, Works, StarsCanvas, GithubContributions } from './components';
 
 const App = () => {
-  return (
-    <Router>
-        <div className="relative z-0 bg-primary">
-            <div className="bg-cover bg-hero-pattern">
-                <Navbar />
-                <Hero />
-            </div>
-            <About />
-{/*             <Experience />  */}
-            <Tech />
-            <Works />
-{/*             <Feedbacks /> */}
-            <div className="relative z-0">
-                <Contact />
-                <StarsCanvas />
-            </div>
-        </div>
+	return (
+		<Router>
+			<div className='relative z-0 bg-primary'>
+				<div className='bg-cover bg-hero-pattern'>
+					<Navbar />
+					<Hero />
+				</div>
+				<About />
+				<Experience />
+				<Tech />
+				<Works />
+				<GithubContributions />
+				<div className='relative z-0'>
+					<Contact />
+					<StarsCanvas />
+				</div>
+			</div>
+		</Router>
+	);
+};
 
-    </Router> 
-  )
-}
-
-export default App
+export default App;
