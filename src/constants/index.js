@@ -1,12 +1,16 @@
 import {
-	mobile,
-	backend,
 	web,
+	backend,
+	mobile,
+	design,
 	javascript,
 	typescript,
 	html,
 	css,
 	reactjs,
+	nextjs,
+	jest,
+	playwrite,
 	redux,
 	tailwind,
 	nodejs,
@@ -16,7 +20,6 @@ import {
 	sixt,
 	tyson,
 	freelance,
-	threejs,
 	marvelCharacter,
 	motohub,
 	skyquest,
@@ -32,6 +35,14 @@ export const navLinks = [
 		title: 'Work',
 	},
 	{
+		id: 'projects',
+		title: 'Projects',
+	},
+	{
+		id: 'contributions',
+		title: 'Contributions',
+	},
+	{
 		id: 'contact',
 		title: 'Contact',
 	},
@@ -43,12 +54,16 @@ const services = [
 		icon: web,
 	},
 	{
+		title: 'Backend Developer',
+		icon: backend,
+	},
+	{
 		title: 'React Native Developer',
 		icon: mobile,
 	},
 	{
-		title: 'Backend Developer',
-		icon: backend,
+		title: 'Certified Ctrl+Z Specialist',
+		icon: design,
 	},
 ];
 
@@ -94,10 +109,6 @@ const technologies = [
 		icon: mongodb,
 	},
 	{
-		name: 'Three JS',
-		icon: threejs,
-	},
-	{
 		name: 'git',
 		icon: git,
 	},
@@ -116,7 +127,7 @@ const experiences = [
 		title: 'Senior Software Engineer',
 		company_name: 'SIXT',
 		icon: sixt,
-		iconBg: '#E6DEDD',
+		iconBg: '#1a1a1a',
 		date: 'Aug 2023 - Jul 2024',
 		points: [
 			"Led development initiatives for SIXT's global car rental platform serving 2M+ monthly users.",
@@ -133,7 +144,7 @@ const experiences = [
 		title: 'Software Engineer - Digital Marketing',
 		company_name: 'Tyson Foods',
 		icon: tyson,
-		iconBg: '#E6DEDD',
+		iconBg: '#fff',
 		date: 'Apr 2022 - Aug 2023',
 		points: [
 			"Developed solutions to meet business requirements for Fortune 500 company's digital presence.",
@@ -149,7 +160,7 @@ const experiences = [
 		title: 'Software Engineer',
 		company_name: 'Jungle.ai',
 		icon: jungleai,
-		iconBg: '#383E56',
+		iconBg: '#ffcc0c',
 		date: 'Aug 2021 - Jan 2022',
 		points: [
 			'Contributed to scalable applications for predictive maintenance through machine learning solutions.',
@@ -163,14 +174,13 @@ const experiences = [
 		title: 'Full stack Developer',
 		company_name: 'Freelance',
 		icon: freelance,
-		iconBg: '#E6DEDD',
+		iconBg: '#28B2FE',
 		date: 'Jan 2018 - Dec 2021',
 		points: [
 			'Worked as a freelancer for local companies, mainly working on full-stack solutions (backend, frontend, and mobile).',
 			'Developed and maintained web applications using React.js and other related technologies.',
 			'Collaborated with cross-functional teams including designers, product managers, and other developers to create high-quality products.',
 			'Implemented responsive design and ensuring cross-browser compatibility.',
-			'Participated in code reviews and providing constructive feedback to other developers.',
 		],
 	},
 ];
@@ -240,4 +250,4 @@ const projects = [
 	},
 ];
 
-export { services, technologies, experiences, testimonials, projects };
+export { services, technologies, experiences, projects };

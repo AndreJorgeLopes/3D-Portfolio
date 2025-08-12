@@ -1,15 +1,13 @@
-import logo from './logo.svg';
-import backend from './backend.png';
-import creator from './creator.png';
-import mobile from './mobile.png';
 import web from './web.png';
+import backend from './backend.png';
+import mobile from './mobile.png';
+import design from './design.png';
+
 import github from './github.png';
-import menu from './menu.svg';
-import close from './close.svg';
+import linkedin from './linkedin.svg';
 
 import css from './tech/css.png';
 import mui from './tech/mui.png';
-
 import git from './tech/git.png';
 import html from './tech/html.png';
 import javascript from './tech/javascript.png';
@@ -22,7 +20,6 @@ import nextjs from './tech/nextjs.png';
 import typescript from './tech/typescript.png';
 import jest from './tech/jest.png';
 import playwrite from './tech/playwrite.png';
-import threejs from './tech/threejs.svg';
 
 import sixt from './company/sixt.svg';
 import tyson from './company/tyson.svg';
@@ -31,17 +28,15 @@ import freelance from './company/freelance.svg';
 
 import marvelCharacter from './marvelCharacter.jpg';
 import motohub from './motohub.jpg';
-import skyquest from './article.jpg';
+import skyquest from './skyquest.jpg';
 
 export {
-	logo,
-	backend,
-	creator,
-	mobile,
 	web,
+	backend,
+	mobile,
+	design,
 	github,
-	menu,
-	close,
+	linkedin,
 	css,
 	git,
 	mui,
@@ -54,7 +49,6 @@ export {
 	nextjs,
 	redux,
 	tailwind,
-	threejs,
 	jest,
 	playwrite,
 	sixt,

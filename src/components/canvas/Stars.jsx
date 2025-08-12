@@ -1,45 +1,68 @@
-import { useState, useRef, Suspense } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Points, PointMaterial, Preload } from '@react-three/drei';
-import * as random from 'maath/random/dist/maath-random.esm';
+import { useMemo, useRef } from 'react';
+import { Points, PointMaterial } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import ModelCanvas from './ModelCanvas';
 
-const Stars = (props) => {
-  const ref = useRef();
+const Stars = ({ variant = 'default' }) => {
+	const ref = useRef();
 
-  const sphere = random.inSphere(new Float32Array(5000), {radius: 1.2 })
+	// Memoize star positions to prevent recalculation
+	const positions = useMemo(() => {
+		const count = variant === 'default' ? 5000 : 3000;
+		const radius = variant === 'default' ? 1.2 : 1.4;
+		const positions = new Float32Array(count * 3);
 
-  useFrame((state, delta)=> {
-    ref.current.rotation.x -= delta / 10;
-    ref.current.rotation.y -= delta / 15;
-  })
-  return (
-    <group rotation={[0, 0, Math.PI /4]}>
-       
-       <Points ref={ref} positions={sphere} stride={3} frustumCulled {...props}>
-        <PointMaterial
-           transparent
-           color="#f272c8"
-           size={0.002}
-           sizeAttenuation={true}
-           depthWrite={false}
-        />
-       </Points>
-    </group> 
-  )
-}
+		for (let i = 0; i < count; i++) {
+			const r = variant === 'default' ? radius * Math.random() : radius + 0.4 * Math.random();
+			const theta = 2 * Math.PI * Math.random();
+			const phi = variant === 'default' ? Math.acos(2 * Math.random() - 1) : Math.random() * Math.PI;
 
-const StarsCanvas = () => {
-    return (
-      <div className="w-full h-auto absolute inset-0 z-[-1]">
-        <Canvas camera={{ position: [0, 0, 1] }}>
-          <Suspense fallback={null}>
-            <Stars />
-          </Suspense>
+			positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+			positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+			positions[i * 3 + 2] = variant === 'default' ? r * Math.cos(phi) : -Math.abs(r * Math.cos(phi));
+		}
 
-          <Preload />
-        </Canvas>
-      </div>
-    )
-}
+		return positions;
+	}, [variant]);
+
+	// Optimized animation with delta-based rotation
+	const speed = variant === 'default' ? 10 : 40;
+	useFrame((_, delta) => {
+		if (!ref.current) return;
+		ref.current.rotation.x -= delta / speed;
+		ref.current.rotation.y -= delta / (speed * 1.5);
+	});
+
+	return (
+		<group ref={ref} rotation={[0, 0, Math.PI / 4]}>
+			<Points positions={positions} stride={3} frustumCulled>
+				<PointMaterial
+					transparent
+					color={variant === 'default' ? '#f272c8' : '#72f2c8'}
+					size={variant === 'default' ? 0.002 : 0.001}
+					sizeAttenuation={true}
+					depthWrite={false}
+					// Performance optimizations
+					toneMapped={false}
+					fog={false}
+				/>
+			</Points>
+		</group>
+	);
+};
+
+const StarsCanvas = ({ variant = 'default' }) => (
+	<ModelCanvas
+		workerName='starsCanvasWorker'
+		cameraProps={{
+			position: [0, 0, 1],
+			fov: 45,
+			near: 0.1,
+			far: 10,
+		}}
+		gl={{ antialias: false }}>
+		<Stars variant={variant} />
+	</ModelCanvas>
+);
 
 export default StarsCanvas;
