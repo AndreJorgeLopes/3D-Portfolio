@@ -30,14 +30,6 @@ const nextConfig = {
 			};
 		}
 
-		// Fix for dynamic imports
-		config.module.parser = {
-			...config.module.parser,
-			javascript: {
-				...config.module.parser?.javascript,
-				dynamicImportMode: 'eager',
-			},
-		};
 
 		return config;
 	},

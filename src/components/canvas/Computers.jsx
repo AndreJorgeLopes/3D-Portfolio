@@ -1,20 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useGLTF } from '@react-three/drei';
 import ModelCanvas from './ModelCanvas';
-// import { useWorkerGLTF } from '../../hooks/useWorkerGLTF'; // Backup loading strategy
 
 const Computer = ({ isMobile }) => {
-	// Primary rendering strategy
 	const computer = useGLTF('/desktop_pc/scene.glb');
-
-	/* Backup GLTF worker loading strategy - uncomment if needed
-  const { scene, error } = useWorkerGLTF('/desktop_pc/scene.glb');
-  if (error) {
-    console.error('GLTF loading error:', error);
-    return null;
-  }
-  const computer = { scene };
-  */
 
 	return (
 		<mesh>

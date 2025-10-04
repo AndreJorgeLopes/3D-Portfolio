@@ -1,6 +1,7 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo, useCallback } from 'react';
 import { Preload } from '@react-three/drei';
 import { useOffscreenCanvas } from '../../hooks/useOffscreenCanvas';
+import { throttle, debounce } from '../../utils/throttle';
 
 /**
  * Wrapper component for 3D model canvases
@@ -58,27 +59,31 @@ const ModelCanvas = ({
 		}
 	}, [isSupported]);
 
+	// Memoize throttled/debounced handlers
+	const throttledMouseMove = useMemo(() => (onMouseMove ? throttle(onMouseMove, 16) : null), [onMouseMove]);
+
+	const debouncedResize = useMemo(() => (onResize ? debounce(onResize, 150) : null), [onResize]);
+
 	// Event handlers
 	useEffect(() => {
 		const container = containerRef.current;
 		if (!container) return;
 
-		// Handle resize
-		if (onResize) {
-			const observer = new ResizeObserver(onResize);
+		if (debouncedResize) {
+			const observer = new ResizeObserver(debouncedResize);
 			observer.observe(container);
-			onResize();
+			debouncedResize();
 			return () => observer.disconnect();
 		}
-	}, [onResize]);
+	}, [debouncedResize]);
 
 	useEffect(() => {
 		const container = containerRef.current;
-		if (!container || !onMouseMove) return;
+		if (!container || !throttledMouseMove) return;
 
-		container.addEventListener('mousemove', onMouseMove, { passive: true });
-		return () => container.removeEventListener('mousemove', onMouseMove);
-	}, [onMouseMove]);
+		container.addEventListener('mousemove', throttledMouseMove, { passive: true });
+		return () => container.removeEventListener('mousemove', throttledMouseMove);
+	}, [throttledMouseMove]);
 
 	if (!Canvas) return null;
 

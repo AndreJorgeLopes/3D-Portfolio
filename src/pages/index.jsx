@@ -13,7 +13,6 @@ const Home = () => {
 				<Hero />
 			</div>
 			<div>
-				<StarsCanvas variant='bottom' />
 				<About />
 				<Experience />
 				<Tech />

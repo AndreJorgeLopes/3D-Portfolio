@@ -1,20 +1,9 @@
 import { Suspense } from 'react';
 import { useGLTF, OrbitControls, Preload } from '@react-three/drei';
 import ModelCanvas from './ModelCanvas';
-// import { useWorkerGLTF } from '../../hooks/useWorkerGLTF'; // Backup loading strategy
 
 const Earth = () => {
-	// Primary rendering strategy using offscreen canvas
 	const earth = useGLTF('/planet/scene.glb');
-
-	/* Backup GLTF worker loading strategy - uncomment if needed
-  const { scene, error } = useWorkerGLTF('/planet/scene.glb');
-  if (error) {
-    console.error('GLTF loading error:', error);
-    return null;
-  }
-  const earth = { scene };
-  */
 
 	return (
 		<>

@@ -91,12 +91,25 @@ export function useOffscreenCanvas({ workerName, canvasProps = {}, onError = con
 
 	// Error handling for worker creation
 	useEffect(() => {
-		if (isSupported) {
-			const testWorker = (new Worker(workerUrl).onerror = error => {
+		if (!isSupported) return;
+
+		let testWorker;
+		try {
+			testWorker = new Worker(workerUrl);
+			testWorker.onerror = error => {
 				onError(new Error(`Failed to load worker: ${JSON.stringify(error)}`));
 				setIsSupported(false);
-			});
+			};
+		} catch (error) {
+			onError(new Error(`Failed to create worker: ${error.message}`));
+			setIsSupported(false);
 		}
+
+		return () => {
+			if (testWorker) {
+				testWorker.terminate();
+			}
+		};
 	}, [isSupported, workerUrl, onError]);
 
 	return {

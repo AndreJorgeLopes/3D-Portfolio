@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
 import './index.css';
 
 function MyApp({ Component, pageProps }) {
@@ -20,9 +19,15 @@ function MyApp({ Component, pageProps }) {
 					});
 				});
 
-				// Handle controller change
+				// Handle controller change with debouncing to prevent reload loops
+				let reloading = false;
 				navigator.serviceWorker.addEventListener('controllerchange', () => {
-					window.location.reload();
+					if (!reloading) {
+						reloading = true;
+						setTimeout(() => {
+							window.location.reload();
+						}, 100);
+					}
 				});
 			} catch (error) {
 				console.error('Service worker registration failed:', error);
@@ -34,16 +39,19 @@ function MyApp({ Component, pageProps }) {
 
 			if (!('caches' in window)) return;
 
+			const cache = await caches.open('3d-portfolio-cache-v1');
+
 			for (const model of models) {
 				try {
-					const cache = await caches.open('3d-portfolio-cache-v1');
 					const cached = await cache.match(model);
 
-					if (!cached) {
-						const response = await fetch(model);
-						if (response.ok) {
-							await cache.put(model, response);
-						}
+					if (cached) {
+						continue;
+					}
+
+					const response = await fetch(model);
+					if (response.ok) {
+						await cache.put(model, response);
 					}
 				} catch (error) {
 					console.error(`Failed to preload model ${model}:`, error);
@@ -72,11 +80,7 @@ function MyApp({ Component, pageProps }) {
 		}
 	}, []);
 
-	return (
-		<AnimatePresence mode='wait'>
-			<Component {...pageProps} />
-		</AnimatePresence>
-	);
+	return <Component {...pageProps} />;
 }
 
 export default MyApp;
