@@ -6,23 +6,9 @@ import { styles } from "../styles";
 import { services } from "../constants";
 import { SectionWrapper } from "../hoc";
 import { fadeIn, textVariant } from "../utils/motion";
+import AnimatedWord from "./AnimatedWord";
 
-const TechTag = ({ color, children, duration = 3 }) => (
-  <motion.span
-    className="font-semibold underline underline-offset-4 decoration-2"
-    style={{ color, textDecorationColor: color }}
-    animate={{ y: [0, -2, 0] }}
-    transition={{
-      duration,
-      repeat: Infinity,
-      repeatType: "loop",
-      ease: "easeInOut",
-    }}
-    whileHover={{ scale: 1.05 }}
-  >
-    {children}
-  </motion.span>
-);
+/* AnimatedWord moved to separate component (./AnimatedWord.jsx) */
 
 const ServiceCard = ({ index, title, icon, ...rest }) => (
   <Tilt
@@ -65,24 +51,14 @@ const About = () => {
         className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]"
       >
         I'm a skilled software developer with experience in{" "}
-        <TechTag color="#3178C6" duration={2.6}>
-          TypeScript
-        </TechTag>{" "}
-        and{" "}
-        <TechTag color="#F7DF1E" duration={2.9}>
-          JavaScript
-        </TechTag>
-        , and expertise in frameworks like{" "}
-        <TechTag color="#61DAFB" duration={3.2}>
-          React
-        </TechTag>
-        ,{" "}
-        <TechTag color="#68A063" duration={3.5}>
-          Node.js
-        </TechTag>
-        , and more. I'm a quick learner and collaborate closely with clients to
-        create efficient, scalable, and user-friendly solutions that solve
-        real-world problems. Let's work together to bring your ideas to life!
+        <AnimatedWord word="TypeScript" color="#3178C6" baseDelay={0.1} /> and{" "}
+        <AnimatedWord word="JavaScript" color="#F7DF1E" baseDelay={0.35} />, and
+        expertise in frameworks like{" "}
+        <AnimatedWord word="React" color="#61DAFB" baseDelay={0.6} />,{" "}
+        <AnimatedWord word="Node.js" color="#68A063" baseDelay={0.85} />, and
+        more. I'm a quick learner and collaborate closely with clients to create
+        efficient, scalable, and user-friendly solutions that solve real-world
+        problems. Let's work together to bring your ideas to life!
       </motion.p>
 
       <div className="mt-20 grid gap-10 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 justify-items-center xl:justify-items-start">

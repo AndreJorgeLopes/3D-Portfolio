@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
 import { styles } from "../styles";
+import AnimatedWord from "./AnimatedWord";
 
 const ComputersCanvas = dynamic(
   () => import("../components/canvas/Computers"),
@@ -27,16 +28,22 @@ const Hero = () => {
 
         <div>
           <h1 className={`${styles.heroHeadText}`}>
-            <span className="text-[#915eff] underline">Howdy</span> Stranger,
+            <AnimatedWord word="Howdy" color="#915eff" baseDelay={0.05} />{" "}
+            Stranger,
           </h1>
           <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-            My name's <span className="text-[#915eff] underline">André</span>{" "}
-            and I'm a Full-stack Developer,
+            My name's{" "}
+            <AnimatedWord word="André" color="#915eff" baseDelay={0.15} /> and
+            I'm a Full-stack Developer,
             <br className="hidden sm:block" />
             currently looking for a role in{" "}
-            <span className="text-[#915eff] underline">Amsterdam</span>,{" "}
-            <span className="text-[#915eff] underline">Lisbon</span> or{" "}
-            <span className="text-[#915eff] underline">Fully remote</span>.
+            <AnimatedWord
+              word="Amsterdam"
+              color="#915eff"
+              baseDelay={0.25}
+            />, <AnimatedWord word="Lisbon" color="#915eff" baseDelay={0.35} />{" "}
+            or <AnimatedWord word="Fully" color="#915eff" baseDelay={0.45} />
+            <AnimatedWord word="remote" color="#915eff" baseDelay={0.45} />.
           </p>
         </div>
       </div>

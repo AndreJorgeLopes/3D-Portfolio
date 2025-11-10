@@ -22,7 +22,7 @@ const Home = () => {
 
       {/* Hero section */}
       <div className="bg-hero-pattern bg-no-repeat bg-center bg-cover min-h-screen relative">
-        <StarsCanvas />
+        <StarsCanvas />,
         <Hero />
       </div>
 
