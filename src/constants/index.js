@@ -185,7 +185,7 @@ const experiences = [
     company_name: "Personal Chapter",
     icon: design,
     iconBg: "#1a1a1a",
-    date: "2024 - Present",
+    date: "Aug 2024 - Present",
     points: [
       "After wrapping up my last role, life threw a curveball... A <span class='font-semibold underline'>serious motorcycle crash</span>. That meant a long hospital stay, <span class='font-semibold underline'>multiple surgeries</span>, and a recovery process that became its own full-time job. <span class='opacity-80'>(10/10 would not recommend as a career coach)</span>.",
       "While I was immobile, I invested the time in my craft: reading, building, and shipping code. I deepened my skills in React and Node.js, stayed up to date with the frontend/full-stack ecosystem, and kept momentum with <span class='font-semibold underline'>open‑source</span> on GitHub and remote freelance work.",
