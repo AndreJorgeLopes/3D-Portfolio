@@ -7,7 +7,7 @@ const Navbar = () => {
 	const [active, setActive] = useState('');
 
 	return (
-		<nav className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20 bg-primary`}>
+		<nav className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-[99999] bg-primary`}>
 			<div className='w-full flex items-center max-w-7xl mx-auto md:justify-between xs:justify-center'>
 				<div className='flex items-center'>
 					<p className='text-white text-[18px] font-bold cursor-pointer flex'>

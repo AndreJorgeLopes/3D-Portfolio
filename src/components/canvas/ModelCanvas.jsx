@@ -16,12 +16,14 @@ const ModelCanvas = ({
 	containerClassName = 'w-full h-screen',
 	containerStyle = {},
 	canvasProps = {},
+	continuousAnimation = false, // Add support for continuous animation (needed for Stars)
 }) => {
 	const containerRef = useRef(null);
 
 	// Initialize canvas with offscreen support and performance settings
 	const { Canvas, isSupported } = useOffscreenCanvas({
 		workerName,
+		continuousAnimation, // Pass through the continuous animation flag
 		canvasProps: {
 			...canvasProps,
 			camera: cameraProps,
@@ -32,8 +34,6 @@ const ModelCanvas = ({
 				preserveDrawingBuffer: false,
 				powerPreference: 'high-performance',
 			},
-			// Use frameloop='demand' for better performance
-			frameloop: 'demand',
 			// Performance optimization
 			performance: {
 				min: 0.5,
@@ -47,17 +47,8 @@ const ModelCanvas = ({
 		},
 	});
 
-	// Handle strict mode double mounting
-	useEffect(() => {
-		if (isSupported) {
-			const cleanup = () => {
-				// Force cleanup of any existing workers
-				window.location.reload();
-			};
-			window.addEventListener('beforeunload', cleanup);
-			return () => window.removeEventListener('beforeunload', cleanup);
-		}
-	}, [isSupported]);
+	// Removed forced reload cleanup that caused remount races with Offscreen Canvas
+	// Strict Mode double-mount is safe; @react-three/offscreen handles internal cleanup.
 
 	// Memoize throttled/debounced handlers
 	const throttledMouseMove = useMemo(() => (onMouseMove ? throttle(onMouseMove, 16) : null), [onMouseMove]);
@@ -81,9 +72,14 @@ const ModelCanvas = ({
 		const container = containerRef.current;
 		if (!container || !throttledMouseMove) return;
 
-		container.addEventListener('mousemove', throttledMouseMove, { passive: true });
-		return () => container.removeEventListener('mousemove', throttledMouseMove);
-	}, [throttledMouseMove]);
+		container.addEventListener('mousemove', onMouseMove, { passive: true });
+		return () => {
+			// Fix: Check if container still exists before removing listener
+			if (container && container.removeEventListener) {
+				container.removeEventListener('mousemove', onMouseMove);
+			}
+		};
+	}, [onMouseMove]);
 
 	if (!Canvas) return null;
 

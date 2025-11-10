@@ -18,19 +18,24 @@ const Earth = () => {
 
 const EarthCanvas = () => {
 	return (
-		<div className='relative w-full h-[550px]'>
-			<ModelCanvas
-				workerName='earthCanvasWorker'
-				cameraProps={{
-					fov: 45,
-					near: 0.1,
-					far: 200,
-					position: [-4, 3, 6],
-				}}
-				gl={{ preserveDrawingBuffer: false }}>
-				<Earth />
-			</ModelCanvas>
-		</div>
+		<ModelCanvas
+			workerName='earthCanvasWorker'
+			containerClassName='w-full h-full'
+			cameraProps={{
+				fov: 45,
+				near: 0.1,
+				far: 200,
+				position: [-4, 3, 6],
+			}}
+			canvasProps={{
+				gl: {
+					preserveDrawingBuffer: false,
+					alpha: true, // Ensure transparent background
+					premultipliedAlpha: false
+				}
+			}}>
+			<Earth />
+		</ModelCanvas>
 	);
 };
 

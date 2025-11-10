@@ -12,7 +12,12 @@ import CanvasLoader from '../components/Loader';
  * @param {Function} options.onError - Error callback
  * @returns {Object} Configured Canvas component and support info
  */
-export function useOffscreenCanvas({ workerName, canvasProps = {}, onError = console.error }) {
+export function useOffscreenCanvas({
+	workerName,
+	canvasProps = {},
+	onError = console.error,
+	continuousAnimation = false,
+}) {
 	const [isSupported, setIsSupported] = useState(false);
 
 	// Check for offscreen support
@@ -29,11 +34,12 @@ export function useOffscreenCanvas({ workerName, canvasProps = {}, onError = con
 				antialias: false,
 				powerPreference: 'high-performance',
 				failIfMajorPerformanceCaveat: true,
-				alpha: false, // Disable alpha for better performance
+				alpha: true, // Enable alpha for transparent backgrounds
+				premultipliedAlpha: false, // Important for proper transparency
 				stencil: false,
 				depth: true,
 			},
-			frameloop: 'demand', // Only render when needed
+			frameloop: continuousAnimation ? 'always' : 'demand', // Stars need continuous animation, others can use demand
 			performance: {
 				min: 0.5,
 				max: 1,
@@ -41,7 +47,7 @@ export function useOffscreenCanvas({ workerName, canvasProps = {}, onError = con
 			},
 			legacy: false, // Disable legacy mode
 		}),
-		[]
+		[continuousAnimation]
 	);
 
 	// Get worker path based on environment and handle errors
@@ -70,15 +76,15 @@ export function useOffscreenCanvas({ workerName, canvasProps = {}, onError = con
 		[baseConfig, canvasProps]
 	);
 
-	// Create configured Canvas component
+	// Create configured Canvas component - disable offscreen for now to avoid worker issues
 	const Canvas = useMemo(() => {
-		const SelectedCanvas = isSupported ? OffscreenCanvas : DefaultCanvas;
+		// Always use DefaultCanvas for stability
+		const SelectedCanvas = DefaultCanvas;
 
 		return function ConfiguredCanvas({ children, ...props }) {
 			const finalProps = {
 				...mergedProps,
 				...props,
-				...(isSupported && { workerUrl }),
 			};
 
 			return (
@@ -87,30 +93,7 @@ export function useOffscreenCanvas({ workerName, canvasProps = {}, onError = con
 				</SelectedCanvas>
 			);
 		};
-	}, [isSupported, mergedProps, workerUrl]);
-
-	// Error handling for worker creation
-	useEffect(() => {
-		if (!isSupported) return;
-
-		let testWorker;
-		try {
-			testWorker = new Worker(workerUrl);
-			testWorker.onerror = error => {
-				onError(new Error(`Failed to load worker: ${JSON.stringify(error)}`));
-				setIsSupported(false);
-			};
-		} catch (error) {
-			onError(new Error(`Failed to create worker: ${error.message}`));
-			setIsSupported(false);
-		}
-
-		return () => {
-			if (testWorker) {
-				testWorker.terminate();
-			}
-		};
-	}, [isSupported, workerUrl, onError]);
+	}, [mergedProps]);
 
 	return {
 		Canvas,

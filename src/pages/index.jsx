@@ -7,19 +7,31 @@ const StarsCanvas = dynamic(() => import('../components/canvas/Stars'), { ssr: f
 const Home = () => {
 	return (
 		<div className='relative bg-primary z-0'>
-			<div className='bg-hero-pattern bg-no-repeat relative z-10'>
-				<StarsCanvas />
-				<Navbar />
-				<Hero />
+			<div className='bg-hero-pattern bg-no-repeat bg-center bg-cover relative min-h-screen'>
+				{/* Stars background layer - lowest z-index, transparent background */}
+				<div className='absolute inset-0 z-0'>
+					<StarsCanvas />
+				</div>
+				{/* Navigation and content - higher z-index */}
+				<div className='relative z-10'>
+					<Navbar />
+					<Hero />
+				</div>
 			</div>
-			<div>
-				<About />
-				<Experience />
-				<Tech />
-				<Works />
-				<GithubContributions />
-				<div className='relative z-0'>
-					<Contact />
+			<div className='relative'>
+				{/* Bottom stars as background layer - lowest z-index */}
+				<div className='absolute inset-0 z-0'>
+					<StarsCanvas variant='bottom' />
+				</div>
+				<div className='relative z-10'>
+					<About />
+					<Experience />
+					<Tech />
+					<Works />
+					<GithubContributions />
+					<div className='relative z-0'>
+						<Contact />
+					</div>
 				</div>
 			</div>
 		</div>

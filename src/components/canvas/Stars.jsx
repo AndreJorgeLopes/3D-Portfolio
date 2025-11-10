@@ -54,6 +54,11 @@ const Stars = ({ variant = 'default' }) => {
 const StarsCanvas = ({ variant = 'default' }) => (
 	<ModelCanvas
 		workerName='starsCanvasWorker'
+		continuousAnimation={true} // Stars need continuous animation
+		containerClassName={variant === 'bottom'
+			? 'w-full h-full pointer-events-none' // Bottom stars full height as background
+			: 'absolute inset-0 w-full h-full z-0 pointer-events-none' // Top stars as background layer
+		}
 		cameraProps={{
 			position: [0, 0, 1],
 			fov: 45,

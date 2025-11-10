@@ -9,9 +9,15 @@ const ComputersCanvas = dynamic(() => import('../components/canvas/Computers'), 
 const Hero = () => {
 	return (
 		<section className='relative w-full h-screen mx-auto'>
+			{/* Computer canvas - middle z-index, no pointer events to prevent flickering */}
+			<div className='absolute inset-0 z-10 pointer-events-none'>
+				<ComputersCanvas />
+			</div>
+
+			{/* Hero text content - highest z-index */}
 			<div
-				className={`${styles.paddingX} absolute inset-0 top-[15vh]
-      max-w-7xl mx-auto flex flex-row items-start gap-5`}>
+				className={`${styles.paddingX} absolute inset-0 top-[15vh] z-20
+			   max-w-7xl mx-auto flex flex-row items-start gap-5 pointer-events-auto`}>
 				<div className='flex flex-col items-center justify-center mt-5'>
 					<div className='w-5 h-5 rounded-full bg-[#915eff]' />
 					<div className='w-1 h-40 sm:h-80 violet-gradient' />
@@ -31,8 +37,8 @@ const Hero = () => {
 				</div>
 			</div>
 
-			<ComputersCanvas />
-			<div className='absolute flex items-center justify-center w-full bottom-[5vh]'>
+			{/* Scroll indicator - highest z-index */}
+			<div className='absolute flex items-center justify-center w-full bottom-[5vh] z-20'>
 				<a href='#about'>
 					<div className='w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2'>
 						<motion.div
