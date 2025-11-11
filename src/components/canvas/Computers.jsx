@@ -1,19 +1,31 @@
-import { useState, useRef, useEffect, memo } from "react";
+import { useRef, useEffect, memo, useCallback } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import ModelCanvas from "./ModelCanvas";
+import { useResponsiveScale } from "../../hooks/useResponsiveScale";
 
-const Computer = memo(({ scale, position, rotationRef }) => {
+const Computer = memo(({ scaleRef, positionRef, rotationRef }) => {
   const computer = useGLTF("/desktop_pc/scene.glb");
   const groupRef = useRef();
+  const meshRef = useRef();
 
-  // Smoothly interpolate rotation using ref (no re-renders)
+  // Smoothly interpolate rotation and update scale/position using refs
   useFrame(() => {
     if (!groupRef.current || rotationRef.current === undefined) return;
 
-    // Lerp (linear interpolation) for smooth rotation
+    // Update rotation
     const target = rotationRef.current;
     groupRef.current.rotation.y += (target - groupRef.current.rotation.y) * 0.1;
+
+    // Update scale and position from refs (no re-renders)
+    if (meshRef.current && scaleRef.current && positionRef.current) {
+      meshRef.current.scale.set(
+        scaleRef.current,
+        scaleRef.current,
+        scaleRef.current
+      );
+      meshRef.current.position.set(...positionRef.current);
+    }
   });
 
   return (
@@ -30,9 +42,10 @@ const Computer = memo(({ scale, position, rotationRef }) => {
         shadow-mapSize={1024}
       />
       <primitive
+        ref={meshRef}
         object={computer.scene}
-        scale={scale}
-        position={position}
+        scale={0.6}
+        position={[-0.5, -2.5, -1]}
         rotation={[-0.01, -0.2, -0.1]}
       />
     </group>
@@ -42,29 +55,17 @@ const Computer = memo(({ scale, position, rotationRef }) => {
 Computer.displayName = "Computer";
 
 const ComputersCanvas = () => {
-  const [scale, setScale] = useState(0.6);
-  const [position, setPosition] = useState([0, -2.5, -1]);
-  const targetRotationRef = useRef(0);
   const containerRef = useRef(null);
+  const positionRef = useRef([-0.5, -2.5, -1]);
+  const targetRotationRef = useRef(0);
 
-  // Handle responsive sizing with smooth automated scaling
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-
-      // Scale configuration
-      const minScale = 0.28;
-      const maxScale = 0.6;
-      const minWidth = 400;
-      const maxWidth = 1920;
-
-      // Calculate responsive scale (linear interpolation)
-      const scaleRange = maxScale - minScale;
-      const widthRange = maxWidth - minWidth;
-      const clampedWidth = Math.max(minWidth, Math.min(maxWidth, width));
-      const scaleProgress = (clampedWidth - minWidth) / widthRange;
-      const calculatedScale = minScale + scaleProgress * scaleRange;
-
+  // Use responsive scale hook with position calculation
+  const { scaleRef } = useResponsiveScale({
+    minScale: 0.28,
+    maxScale: 0.6,
+    minWidth: 400,
+    maxWidth: 1920,
+    onResize: ({ scaleProgress }) => {
       // Position configuration (y and z vary with scale)
       const minY = -1.3;
       const maxY = -2.2;
@@ -75,14 +76,10 @@ const ComputersCanvas = () => {
       const yPos = minY + scaleProgress * (maxY - minY);
       const zPos = minZ + scaleProgress * (maxZ - minZ);
 
-      setScale(calculatedScale);
-      setPosition([-0.5, yPos, zPos]); // X stays at -0.5 (left positioning)
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      // Update position ref (no re-render, no canvas remount)
+      positionRef.current = [-0.5, yPos, zPos];
+    },
+  });
 
   // Handle mouse/touch movement - use global window tracking like TechBalls
   useEffect(() => {
@@ -104,14 +101,15 @@ const ComputersCanvas = () => {
   return (
     <div ref={containerRef} className="w-full h-screen">
       <ModelCanvas
+        key="computer-canvas" // Prevent unmounting
         workerName="computerCanvasWorker"
         continuousAnimation={true}
         cameraProps={{ position: [20, 3, 5], fov: 25 }}
         containerClassName="w-full h-full"
       >
         <Computer
-          scale={scale}
-          position={position}
+          scaleRef={scaleRef}
+          positionRef={positionRef}
           rotationRef={targetRotationRef}
         />
       </ModelCanvas>

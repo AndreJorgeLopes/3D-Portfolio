@@ -76,25 +76,34 @@ const TechBallsCanvas = ({ technologies }) => {
     if (!width || !height) return;
 
     const cols = 5;
-    const padding = 0.5; // world units margin
+    const padding = 1.5; // Increased padding to prevent overflow
     const cameraZ = 12;
     const fov = 45;
 
     const viewportHeight = 2 * cameraZ * Math.tan((fov * Math.PI) / 360);
     const viewportWidth = viewportHeight * (width / height);
 
+    // Calculate maximum scale based on viewport to prevent overflow
+    const gridUnits = 2.5 * (cols - 1) + 2;
+    const sMax = Math.max(0.5, (viewportWidth - padding) / gridUnits);
+
+    // Progressive scale based on viewport width with stricter limits
     const sProg =
       viewportWidth < 5
-        ? 0.75
+        ? 0.6 // Extra small screens
         : viewportWidth < 8
-        ? 1.0
+        ? 0.8 // Small screens
         : viewportWidth < 12
-        ? 1.4
-        : 2.0;
-    const gridUnits = 2.5 * (cols - 1) + 2;
-    const sMax = Math.max(0.6, (viewportWidth - padding) / gridUnits);
+        ? 1.0 // Medium screens
+        : viewportWidth < 16
+        ? 1.2 // Large screens
+        : 1.4; // Extra large screens (max)
 
-    setBallScale(Math.min(sProg, sMax));
+    // Use the minimum of calculated values and apply absolute maximum
+    const calculatedScale = Math.min(sProg, sMax);
+    const maxAbsoluteScale = 1.4; // Hard limit to prevent balls from being too large
+
+    setBallScale(Math.min(calculatedScale, maxAbsoluteScale));
   }, [containerSize]);
 
   // Intersection observer to pause animation when not visible
