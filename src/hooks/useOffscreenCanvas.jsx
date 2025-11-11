@@ -110,16 +110,16 @@ export function useOffscreenCanvas({
 
   // Create configured Canvas component: Offscreen when supported, fallback to DefaultCanvas otherwise
   const Canvas = useMemo(() => {
-    return function ConfiguredCanvas({ children, workerProps = {}, ...props }) {
-      const finalProps = {
-        ...mergedProps,
-        ...props,
-        ...workerProps, // Merge worker props into final props
-      };
-      const useWorker = isSupported && Boolean(workerName) && Boolean(worker);
+    const useWorker = isSupported && Boolean(workerName) && Boolean(worker);
 
-      if (useWorker) {
-        // Offscreen: render worker scene with all merged props
+    // Return a stable component reference
+    if (useWorker) {
+      return function OffscreenCanvasWrapper({
+        children,
+        workerProps = {},
+        ...props
+      }) {
+        const finalProps = { ...mergedProps, ...props, ...workerProps };
         return (
           <OffscreenCanvas
             worker={worker}
@@ -127,11 +127,13 @@ export function useOffscreenCanvas({
             {...finalProps}
           />
         );
-      }
+      };
+    }
 
-      // Fallback: render regular Canvas with children
+    // Fallback: render regular Canvas with children
+    return function DefaultCanvasWrapper({ children }) {
       return (
-        <DefaultCanvas {...finalProps}>
+        <DefaultCanvas {...mergedProps}>
           <Suspense fallback={<CanvasLoader />}>{children}</Suspense>
         </DefaultCanvas>
       );
