@@ -50,13 +50,63 @@ const TechBallsCanvas = ({ technologies }) => {
     [technologies]
   );
 
-  // Global mouse tracking
+  // Global mouse/touch tracking with drag support for touch devices
   useEffect(() => {
-    const onMove = (e) => {
-      mouseXRef.current = (e.clientX / window.innerWidth - 0.5) * 2;
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
+    const container = containerRef.current;
+    if (!container) return;
+
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    let isDragging = false;
+    let lastX = 0;
+
+    if (isTouchDevice) {
+      // Touch device: drag to rotate
+      const handleTouchStart = (e) => {
+        isDragging = true;
+        lastX = e.touches[0].clientX;
+      };
+
+      const handleTouchMove = (e) => {
+        if (!isDragging) return;
+        e.preventDefault(); // Prevent page scrolling while dragging on canvas
+        const currentX = e.touches[0].clientX;
+        const deltaX = currentX - lastX;
+        const rotationDelta = (deltaX / window.innerWidth) * 4; // Higher sensitivity for balls
+        mouseXRef.current += rotationDelta;
+        lastX = currentX; // Update for next move
+      };
+
+      const handleTouchEnd = () => {
+        isDragging = false;
+      };
+
+      // Attach to container, not window
+      container.addEventListener("touchstart", handleTouchStart, {
+        passive: true,
+      });
+      container.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      }); // passive: false to allow preventDefault
+      container.addEventListener("touchend", handleTouchEnd, { passive: true });
+      container.addEventListener("touchcancel", handleTouchEnd, {
+        passive: true,
+      });
+
+      return () => {
+        container.removeEventListener("touchstart", handleTouchStart);
+        container.removeEventListener("touchmove", handleTouchMove);
+        container.removeEventListener("touchend", handleTouchEnd);
+        container.removeEventListener("touchcancel", handleTouchEnd);
+      };
+    } else {
+      // Desktop: follow mouse
+      const onMove = (e) => {
+        mouseXRef.current = (e.clientX / window.innerWidth - 0.5) * 2;
+      };
+      window.addEventListener("mousemove", onMove, { passive: true });
+      return () => window.removeEventListener("mousemove", onMove);
+    }
   }, []);
 
   // Observe container size and compute ball scale clamped to container
