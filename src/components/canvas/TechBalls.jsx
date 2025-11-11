@@ -9,7 +9,7 @@ const Ball = React.memo(({ imgUrl, position, mouseXRef, active, scale }) => {
 
   // Smooth horizontal rotation only (no vertical auto spin)
   useFrame(() => {
-    if (!meshRef.current || !active) return;
+    if (!meshRef.current) return;
     const targetY = (mouseXRef.current || 0) * 0.8;
     meshRef.current.rotation.y += (targetY - meshRef.current.rotation.y) * 0.1;
   });
@@ -42,7 +42,7 @@ const Ball = React.memo(({ imgUrl, position, mouseXRef, active, scale }) => {
 const TechBallsCanvas = ({ technologies }) => {
   const mouseXRef = React.useRef(0);
   const containerRef = React.useRef(null);
-  const [inView, setInView] = useState(true);
+  const inViewRef = React.useRef(true); // Use ref instead of state to prevent re-render
   const [ballScale, setBallScale] = useState(1);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const icons = useMemo(
@@ -106,13 +106,13 @@ const TechBallsCanvas = ({ technologies }) => {
     setBallScale(Math.min(calculatedScale, maxAbsoluteScale));
   }, [containerSize]);
 
-  // Intersection observer to pause animation when not visible
+  // Intersection observer to pause animation when not visible - use ref to prevent re-renders
   useEffect(() => {
     if (!containerRef.current || typeof IntersectionObserver === "undefined")
       return;
     const obs = new IntersectionObserver(
       (entries) => {
-        setInView(entries[0].isIntersecting);
+        inViewRef.current = entries[0].isIntersecting; // Update ref, no re-render
       },
       { threshold: 0.15 }
     );
@@ -137,10 +137,35 @@ const TechBallsCanvas = ({ technologies }) => {
   return (
     <div ref={containerRef} className="w-full h-[400px]">
       <ModelCanvas
+        key="tech-balls-canvas"
         workerName="techBallsCanvasWorker"
         continuousAnimation
         cameraProps={{ position: [0, 0, 12], fov: 45 }}
         containerClassName="w-full h-[400px]"
+        canvasProps={{
+          gl: {
+            preserveDrawingBuffer: false,
+            antialias: true,
+            alpha: true,
+            powerPreference: "high-performance",
+          },
+          onCreated: ({ gl }) => {
+            const canvas = gl.domElement;
+            const handleContextLost = (event) => {
+              event.preventDefault();
+              console.warn(
+                "TechBalls: WebGL context lost, attempting to restore..."
+              );
+            };
+            canvas.addEventListener(
+              "webglcontextlost",
+              handleContextLost,
+              false
+            );
+            return () =>
+              canvas.removeEventListener("webglcontextlost", handleContextLost);
+          },
+        }}
         workerProps={{
           icons,
           containerWidth: containerSize.width,
@@ -164,7 +189,7 @@ const TechBallsCanvas = ({ technologies }) => {
             imgUrl={tech.icon.src}
             position={ballPositions[index]}
             mouseXRef={mouseXRef}
-            active={inView}
+            active={true} // Always active, no conditional rendering
             scale={ballScale}
           />
         ))}

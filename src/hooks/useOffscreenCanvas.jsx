@@ -36,7 +36,7 @@ export function useOffscreenCanvas({
       gl: {
         antialias: false,
         powerPreference: "high-performance",
-        failIfMajorPerformanceCaveat: true,
+        failIfMajorPerformanceCaveat: false, // Don't fail if performance is lower
         alpha: true, // Enable alpha for transparent backgrounds
         premultipliedAlpha: false, // Important for proper transparency
         stencil: false,
@@ -49,6 +49,7 @@ export function useOffscreenCanvas({
         debounce: 200, // Debounce performance adjustments
       },
       legacy: false, // Disable legacy mode
+      resize: { scroll: false }, // Don't automatically resize on scroll
     }),
     [continuousAnimation]
   );
@@ -104,11 +105,15 @@ export function useOffscreenCanvas({
         ...baseConfig.gl,
         ...canvasProps.gl,
       },
+      onCreated: (state) => {
+        // Call user's onCreated if provided
+        if (canvasProps.onCreated) {
+          canvasProps.onCreated(state);
+        }
+      },
     }),
     [baseConfig, canvasProps]
-  );
-
-  // Create configured Canvas component: Offscreen when supported, fallback to DefaultCanvas otherwise
+  ); // Create configured Canvas component: Offscreen when supported, fallback to DefaultCanvas otherwise
   const Canvas = useMemo(() => {
     const useWorker = isSupported && Boolean(workerName) && Boolean(worker);
 

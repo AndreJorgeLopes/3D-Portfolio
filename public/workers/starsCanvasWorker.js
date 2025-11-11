@@ -80,7 +80,7 @@ setup(Stars, {
     far: 10,
   },
   dpr: [1, 1.5],
-  frameloop: "always",
+  frameloop: "demand",
   performance: {
     min: 0.5,
     max: 1,

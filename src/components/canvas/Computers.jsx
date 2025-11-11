@@ -55,7 +55,6 @@ const Computer = memo(({ scaleRef, positionRef, rotationRef }) => {
 Computer.displayName = "Computer";
 
 const ComputersCanvas = () => {
-  const containerRef = useRef(null);
   const positionRef = useRef([-0.5, -2.5, -1]);
   const targetRotationRef = useRef(0);
 
@@ -85,6 +84,7 @@ const ComputersCanvas = () => {
   useEffect(() => {
     const handlePointerMove = (e) => {
       const x = e.clientX || e.touches?.[0]?.clientX;
+      if (x === undefined) return;
       const moveX = (x / window.innerWidth - 0.5) * 2; // Normalize to -1 to 1
       targetRotationRef.current = moveX * 0.5; // Update ref, no re-render
     };
@@ -99,21 +99,55 @@ const ComputersCanvas = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-screen">
-      <ModelCanvas
-        key="computer-canvas" // Prevent unmounting
-        workerName="computerCanvasWorker"
-        continuousAnimation={true}
-        cameraProps={{ position: [20, 3, 5], fov: 25 }}
-        containerClassName="w-full h-full"
-      >
-        <Computer
-          scaleRef={scaleRef}
-          positionRef={positionRef}
-          rotationRef={targetRotationRef}
-        />
-      </ModelCanvas>
-    </div>
+    <ModelCanvas
+      key="computer-canvas" // Prevent unmounting
+      workerName="computerCanvasWorker"
+      continuousAnimation={true}
+      cameraProps={{ position: [20, 3, 5], fov: 25 }}
+      containerClassName="w-full h-screen"
+      canvasProps={{
+        gl: {
+          preserveDrawingBuffer: false, // Let browser manage buffer
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        },
+        onCreated: ({ gl }) => {
+          // Add WebGL context loss/restore handlers
+          const canvas = gl.domElement;
+
+          const handleContextLost = (event) => {
+            event.preventDefault();
+            console.warn("WebGL context lost, attempting to restore...");
+          };
+
+          const handleContextRestored = () => {
+            console.log("WebGL context restored successfully");
+          };
+
+          canvas.addEventListener("webglcontextlost", handleContextLost, false);
+          canvas.addEventListener(
+            "webglcontextrestored",
+            handleContextRestored,
+            false
+          );
+
+          return () => {
+            canvas.removeEventListener("webglcontextlost", handleContextLost);
+            canvas.removeEventListener(
+              "webglcontextrestored",
+              handleContextRestored
+            );
+          };
+        },
+      }}
+    >
+      <Computer
+        scaleRef={scaleRef}
+        positionRef={positionRef}
+        rotationRef={targetRotationRef}
+      />
+    </ModelCanvas>
   );
 };
 
