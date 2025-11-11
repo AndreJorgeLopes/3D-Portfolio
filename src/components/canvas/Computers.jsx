@@ -3,7 +3,7 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import ModelCanvas from "./ModelCanvas";
 
-const Computer = memo(({ isMobile, rotationRef }) => {
+const Computer = memo(({ scale, position, rotationRef }) => {
   const computer = useGLTF("/desktop_pc/scene.glb");
   const groupRef = useRef();
 
@@ -31,8 +31,8 @@ const Computer = memo(({ isMobile, rotationRef }) => {
       />
       <primitive
         object={computer.scene}
-        scale={isMobile ? 0.32 : 0.65}
-        position={isMobile ? [0, -2, -0.5] : [0, -2.7, -1]}
+        scale={scale}
+        position={position}
         rotation={[-0.01, -0.2, -0.1]}
       />
     </group>
@@ -42,14 +42,41 @@ const Computer = memo(({ isMobile, rotationRef }) => {
 Computer.displayName = "Computer";
 
 const ComputersCanvas = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [scale, setScale] = useState(0.6);
+  const [position, setPosition] = useState([0, -2.5, -1]);
   const targetRotationRef = useRef(0);
   const containerRef = useRef(null);
 
-  // Handle responsive sizing
+  // Handle responsive sizing with smooth automated scaling
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 900);
+      const width = window.innerWidth;
+
+      // Scale configuration
+      const minScale = 0.28;
+      const maxScale = 0.6;
+      const minWidth = 400;
+      const maxWidth = 1920;
+
+      // Calculate responsive scale (linear interpolation)
+      const scaleRange = maxScale - minScale;
+      const widthRange = maxWidth - minWidth;
+      const clampedWidth = Math.max(minWidth, Math.min(maxWidth, width));
+      const scaleProgress = (clampedWidth - minWidth) / widthRange;
+      const calculatedScale = minScale + scaleProgress * scaleRange;
+
+      // Position configuration (y and z vary with scale)
+      const minY = -1.3;
+      const maxY = -2.2;
+      const minZ = -0.5;
+      const maxZ = -1;
+
+      // Calculate responsive position
+      const yPos = minY + scaleProgress * (maxY - minY);
+      const zPos = minZ + scaleProgress * (maxZ - minZ);
+
+      setScale(calculatedScale);
+      setPosition([-0.5, yPos, zPos]); // X stays at -0.5 (left positioning)
     };
 
     handleResize();
@@ -82,7 +109,11 @@ const ComputersCanvas = () => {
         cameraProps={{ position: [20, 3, 5], fov: 25 }}
         containerClassName="w-full h-full"
       >
-        <Computer isMobile={isMobile} rotationRef={targetRotationRef} />
+        <Computer
+          scale={scale}
+          position={position}
+          rotationRef={targetRotationRef}
+        />
       </ModelCanvas>
     </div>
   );
