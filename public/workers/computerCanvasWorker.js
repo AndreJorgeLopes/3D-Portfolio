@@ -28,7 +28,9 @@ const withBasePath = (path) => {
     return normalizedPath;
   }
 
-  const normalizedBase = BASE_PATH.endsWith("/") ? BASE_PATH.slice(0, -1) : BASE_PATH;
+  const normalizedBase = BASE_PATH.endsWith("/")
+    ? BASE_PATH.slice(0, -1)
+    : BASE_PATH;
 
   if (normalizedPath === "/") {
     return `${normalizedBase}/`;
