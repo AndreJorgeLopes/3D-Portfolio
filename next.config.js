@@ -1,5 +1,4 @@
 const withTM = require("next-transpile-modules")(["maath", "react-tilt"]);
-const isProd = process.env.NODE_ENV === "production";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -7,10 +6,10 @@ const nextConfig = {
     domains: ["media.tenor.com"],
     unoptimized: true, // Disable default image optimization
   },
-  assetPrefix: isProd ? "/3D-Portfolio" : "",
-  basePath: isProd ? "/3D-Portfolio" : "",
+  assetPrefix: "",
+  basePath: "",
   env: {
-    NEXT_PUBLIC_BASE_PATH: isProd ? "/3D-Portfolio" : "",
+    NEXT_PUBLIC_BASE_PATH: "",
   },
   output: "export",
   webpack: (config, { isServer }) => {
