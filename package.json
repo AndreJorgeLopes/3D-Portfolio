@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && touch ./out/.nojekyll && echo 'andrejorgelopes.github.io/3D-Portfolio' > ./out/CNAME",
+    "build": "next build && node ./scripts/postExport.js && touch ./out/.nojekyll && echo 'andrelopes.is-a.dev' > ./out/CNAME",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "gh-pages -d out --nojekyll --cname andrejorgelopes.github.io/3D-Portfolio"
+    "deploy": "gh-pages -d out --nojekyll --cname andrelopes.is-a.dev"
   },
   "dependencies": {
     "@emailjs/browser": "latest",
