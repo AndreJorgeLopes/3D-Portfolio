@@ -12,14 +12,14 @@ const ComputersCanvas = dynamic(
 
 const Hero = () => {
   return (
-    <section className="relative w-full h-screen mx-auto">
+    <section className="relative w-full min-h-[100svh] mx-auto">
       {/* Computer canvas - middle z-index, no pointer events to prevent flickering */}
       <div className="absolute inset-0 z-10">
         <ComputersCanvas />
       </div>
 
       <div
-        className={`${styles.paddingX} absolute inset-0 top-[15vh] z-20 max-w-7xl mx-auto flex flex-row items-start gap-5 pointer-events-auto`}
+        className={`${styles.paddingX} absolute inset-x-0 top-[11vh] sm:top-[13vh] lg:top-[15vh] z-20 max-w-7xl mx-auto flex flex-row items-start gap-5 pointer-events-auto`}
       >
         <div className="flex flex-col items-center justify-center mt-5">
           <div className="w-5 h-5 rounded-full bg-[#915eff]" />
@@ -28,8 +28,11 @@ const Hero = () => {
 
         <div>
           <h1 className={`${styles.heroHeadText}`}>
-            <AnimatedWord word="Howdy" color="#915eff" baseDelay={0.05} />{" "}
-            Stranger,
+            <AnimatedWord word="Howdy" color="#915eff" baseDelay={0.05} />
+            <span className="ml-1 inline-block underline decoration-[1.5px] underline-offset-6">
+              Stranger
+            </span>
+            <span className="ml-1 inline-block">,</span>
           </h1>
           <p className={`${styles.heroSubText} mt-2 text-white-100`}>
             My name's{" "}

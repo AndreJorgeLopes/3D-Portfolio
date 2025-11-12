@@ -149,7 +149,7 @@ const ComputersCanvas = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-screen">
+    <div ref={containerRef} className="w-full h-full min-h-[100svh]">
       <ModelCanvas
         key="computer-canvas" // Prevent unmounting
         workerName="computerCanvasWorker"

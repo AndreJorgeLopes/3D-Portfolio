@@ -21,8 +21,8 @@ const Home = () => {
       <Navbar />
 
       {/* Hero section */}
-      <div className="bg-hero-pattern bg-no-repeat bg-center bg-cover min-h-screen relative">
-        <StarsCanvas />,
+      <div className="bg-hero-pattern bg-no-repeat bg-center bg-cover min-h-[100svh] relative overflow-hidden">
+        <StarsCanvas />
         <Hero />
       </div>
 
