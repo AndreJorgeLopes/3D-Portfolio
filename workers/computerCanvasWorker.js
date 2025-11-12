@@ -1,9 +1,47 @@
 import { setup } from "@react-three/offscreen";
 import { useGLTF } from "@react-three/drei";
 
+const ABSOLUTE_URL_PATTERN = /^[a-zA-Z][a-zA-Z\d+\-.]*:/;
+
+const BASE_PATH = (() => {
+  if (typeof self === "undefined" || !self.location) return "";
+  const segments = self.location.pathname.split("/");
+  const workersIndex = segments.lastIndexOf("workers");
+  if (workersIndex > 0) {
+    const baseSegments = segments.slice(0, workersIndex);
+    const base = baseSegments.join("/");
+    return base === "/" ? "" : base;
+  }
+  segments.pop();
+  const base = segments.join("/");
+  return base === "/" ? "" : base;
+})();
+
+const withBasePath = (path) => {
+  if (ABSOLUTE_URL_PATTERN.test(path)) {
+    return path;
+  }
+
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  if (!BASE_PATH) {
+    return normalizedPath;
+  }
+
+  const normalizedBase = BASE_PATH.endsWith("/") ? BASE_PATH.slice(0, -1) : BASE_PATH;
+
+  if (normalizedPath === "/") {
+    return `${normalizedBase}/`;
+  }
+
+  return `${normalizedBase}${normalizedPath}`;
+};
+
+const COMPUTER_MODEL_URL = withBasePath("/desktop_pc/scene.glb");
+
 const Computer = ({ isMobile, rotation = [0, 0, 0] }) => {
   try {
-    const computer = useGLTF("/desktop_pc/scene.glb", {
+    const computer = useGLTF(COMPUTER_MODEL_URL, {
       meshOptimization: true, // Enable mesh optimization
       draco: true, // Enable Draco compression
     });
@@ -64,7 +102,7 @@ setup(Computer, {
 });
 
 // Preload with optimizations
-useGLTF.preload("/desktop_pc/scene.glb", {
+useGLTF.preload(COMPUTER_MODEL_URL, {
   meshOptimization: true,
   draco: true,
 });

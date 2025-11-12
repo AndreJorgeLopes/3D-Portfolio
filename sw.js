@@ -1,5 +1,37 @@
 const CACHE_NAME = '3d-portfolio-cache-v1';
-const MODEL_URLS = ['/desktop_pc/scene.glb', '/planet/scene.glb'];
+const MODEL_PATHS = ['/desktop_pc/scene.glb', '/planet/scene.glb'];
+const ABSOLUTE_URL_PATTERN = /^[a-zA-Z][a-zA-Z\d+\-.]*:/;
+
+const BASE_PATH = (() => {
+	const { pathname } = self.location || {};
+	if (!pathname) return '';
+	const segments = pathname.split('/');
+	segments.pop(); // remove sw.js
+	const base = segments.join('/');
+	return base === '/' ? '' : base;
+})();
+
+const withBasePath = path => {
+	if (ABSOLUTE_URL_PATTERN.test(path)) {
+		return path;
+	}
+
+	const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+	if (!BASE_PATH) {
+		return normalizedPath;
+	}
+
+	const normalizedBase = BASE_PATH.endsWith('/') ? BASE_PATH.slice(0, -1) : BASE_PATH;
+
+	if (normalizedPath === '/') {
+		return `${normalizedBase}/`;
+	}
+
+	return `${normalizedBase}${normalizedPath}`;
+};
+
+const MODEL_URLS = MODEL_PATHS.map(withBasePath);
 
 self.addEventListener('install', event => {
 	// Pre-cache model files
