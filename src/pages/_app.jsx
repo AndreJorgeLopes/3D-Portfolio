@@ -1,13 +1,19 @@
 import { useEffect } from 'react';
 import './index.css';
+import { getAssetPath } from '../utils/getAssetPath';
+
+const MODEL_PATHS = ['/desktop_pc/scene.glb', '/planet/scene.glb'];
 
 function MyApp({ Component, pageProps }) {
 	useEffect(() => {
 		const registerServiceWorker = async () => {
 			try {
-				const registration = await navigator.serviceWorker.register('/sw.js', {
-					scope: '/',
-				});
+				const registration = await navigator.serviceWorker.register(
+					getAssetPath('/sw.js'),
+					{
+						scope: getAssetPath('/'),
+					}
+				);
 
 				// Handle updates
 				registration.addEventListener('updatefound', () => {
@@ -35,7 +41,7 @@ function MyApp({ Component, pageProps }) {
 		};
 
 		const preloadModels = async () => {
-			const models = ['/desktop_pc/scene.glb', '/planet/scene.glb'];
+			const models = MODEL_PATHS.map(getAssetPath);
 
 			if (!('caches' in window)) return;
 

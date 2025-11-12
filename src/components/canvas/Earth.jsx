@@ -1,9 +1,12 @@
 import { Suspense } from "react";
 import { useGLTF, OrbitControls, Preload } from "@react-three/drei";
 import ModelCanvas from "./ModelCanvas";
+import { getAssetPath } from "../../utils/getAssetPath";
+
+const EARTH_MODEL_URL = getAssetPath("/planet/scene.glb");
 
 const Earth = () => {
-  const earth = useGLTF("/planet/scene.glb");
+  const earth = useGLTF(EARTH_MODEL_URL);
 
   return (
     <>
@@ -89,6 +92,6 @@ const EarthCanvas = () => {
   );
 };
 
-useGLTF.preload("/planet/scene.glb");
+useGLTF.preload(EARTH_MODEL_URL);
 
 export default EarthCanvas;

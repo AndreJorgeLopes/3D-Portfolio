@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { ObjectLoader } from 'three';
+import { getAssetPath } from '../utils/getAssetPath';
 
 export function useWorkerGLTF(url) {
 	const [state, setState] = useState({
@@ -7,6 +8,8 @@ export function useWorkerGLTF(url) {
 		error: null,
 		isLoading: true,
 	});
+
+	const resolvedUrl = useMemo(() => (url ? getAssetPath(url) : ''), [url]);
 
 	const handleWorkerMessage = useCallback(e => {
 		const { type, gltf, error: workerError } = e.data;
@@ -29,7 +32,7 @@ export function useWorkerGLTF(url) {
 		let isMounted = true;
 
 		async function loadWithWorker() {
-			if (!url) {
+			if (!resolvedUrl) {
 				setState({ scene: null, error: 'No URL provided', isLoading: false });
 				return;
 			}
@@ -50,7 +53,7 @@ export function useWorkerGLTF(url) {
 					}
 				};
 
-				worker.postMessage({ url });
+				worker.postMessage({ url: resolvedUrl });
 			} catch (err) {
 				if (isMounted) {
 					setState({ scene: null, error: err.message, isLoading: false });
@@ -66,7 +69,7 @@ export function useWorkerGLTF(url) {
 				worker.terminate();
 			}
 		};
-	}, [url, handleWorkerMessage, handleWorkerError]);
+	}, [resolvedUrl, handleWorkerMessage, handleWorkerError]);
 
 	return state;
 }

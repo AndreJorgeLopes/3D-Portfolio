@@ -1,11 +1,14 @@
-import { useRef, useEffect, memo, useCallback } from "react";
+import { useRef, useEffect, memo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import ModelCanvas from "./ModelCanvas";
 import { useResponsiveScale } from "../../hooks/useResponsiveScale";
+import { getAssetPath } from "../../utils/getAssetPath";
+
+const COMPUTER_MODEL_URL = getAssetPath("/desktop_pc/scene.glb");
 
 const Computer = memo(({ scaleRef, positionRef, rotationRef }) => {
-  const computer = useGLTF("/desktop_pc/scene.glb");
+  const computer = useGLTF(COMPUTER_MODEL_URL);
   const groupRef = useRef();
   const meshRef = useRef();
 
@@ -204,6 +207,6 @@ const ComputersCanvas = () => {
   );
 };
 
-useGLTF.preload("/desktop_pc/scene.glb");
+useGLTF.preload(COMPUTER_MODEL_URL);
 
 export default ComputersCanvas;
