@@ -27,12 +27,14 @@ const Hero = () => {
         </div>
 
         <div>
-          <h1 className={`${styles.heroHeadText}`}>
+          <h1
+            className={`${styles.heroHeadText} flex flex-nowrap items-baseline gap-1 sm:gap-2`}
+          >
             <AnimatedWord word="Howdy" color="#915eff" baseDelay={0.05} />
-            <span className="ml-1 inline-block underline decoration-[1.5px] underline-offset-6">
+            <span className="inline-block underline decoration-[1.5px] underline-offset-6">
               Stranger
             </span>
-            <span className="ml-1 inline-block">,</span>
+            <span className="inline-block">,</span>
           </h1>
           <p className={`${styles.heroSubText} mt-2 text-white-100`}>
             My name's{" "}
