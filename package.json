@@ -8,6 +8,7 @@
     "build": "next build && node ./scripts/postExport.js && touch ./out/.nojekyll && echo 'andrelopes.is-a.dev' > ./out/CNAME",
     "start": "next start",
     "lint": "next lint",
+    "prepare": "husky install",
     "deploy": "gh-pages -d out --nojekyll --cname andrelopes.is-a.dev"
   },
   "dependencies": {
@@ -82,6 +83,7 @@
     "@types/react-dom": "^18",
     "file-loader": "^6.2.0",
     "gh-pages": "^6.3.0",
+    "husky": "^9.1.6",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"

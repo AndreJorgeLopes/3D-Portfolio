@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+set -eu
+
+if command -v npm >/dev/null 2>&1; then
+	echo "Running npm run build before push..."
+	npm run build
+
+	echo "Running npm run deploy before push..."
+	npm run deploy
+
+	echo "Build and deploy completed successfully. Proceeding with git push."
+else
+	echo "npm is not available on PATH. Skipping build and deploy." >&2
+	exit 1
+fi
