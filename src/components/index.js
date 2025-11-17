@@ -1,24 +1,27 @@
-import { EarthCanvas, BallCanvas, ComputersCanvas, StarsCanvas } from './canvas';
-import Hero from './Hero';
-import Navbar from './Navbar';
-import About from './About';
-import Tech from './Tech';
-import Experience from './Experience';
-import Works from './Works';
-import Contact from './Contact';
-import GithubContributions from './GithubContributions';
+import {
+  EarthCanvas,
+  BallCanvas,
+  ComputersCanvas,
+  StarsCanvas,
+} from "./canvas";
+import Hero from "./Hero";
+import Navbar from "./Navbar";
+import About from "./About";
+import Experience from "./Experience";
+import Works from "./Works";
+import Contact from "./Contact";
+import GithubContributions from "./GithubContributions";
 
 export {
-	Hero,
-	Navbar,
-	About,
-	Tech,
-	Experience,
-	Works,
-	Contact,
-	EarthCanvas,
-	BallCanvas,
-	ComputersCanvas,
-	StarsCanvas,
-	GithubContributions,
+  Hero,
+  Navbar,
+  About,
+  Experience,
+  Works,
+  Contact,
+  EarthCanvas,
+  BallCanvas,
+  ComputersCanvas,
+  StarsCanvas,
+  GithubContributions,
 };

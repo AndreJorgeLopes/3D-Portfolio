@@ -1,12 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { Tilt } from "react-tilt";
 import { motion } from "framer-motion";
 
 import { styles } from "../styles";
 import { github } from "../assets";
 import { SectionWrapper } from "../hoc";
-import { projects } from "../constants";
+import { projects, technologies } from "../constants";
 import { fadeIn, textVariant } from "../utils/motion";
+
+const TechBallsCanvas = dynamic(() => import("./canvas/TechBalls"), {
+  ssr: false,
+});
 
 const ProjectCard = ({
   index,
@@ -128,22 +133,40 @@ const Works = () => {
   return (
     <>
       <motion.div variants={textVariant()}>
+        <p className={styles.sectionSubText}>Tech toolkit</p>
+        <h2 className={styles.sectionHeadText}>Stack Highlights.</h2>
+      </motion.div>
+
+      <motion.p
+        variants={fadeIn("", "", 0.1, 1)}
+        className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]"
+      >
+        These are the tools and technologies I work with every day. The rotating
+        spheres reflects the frameworks and platforms I rely on to turn ideas
+        into polished, performant and engaging experiences.
+      </motion.p>
+
+      <motion.div variants={fadeIn("", "", 0.15, 1)} className="mt-10 w-full">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-tertiary/20 p-4 sm:p-6 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+          <TechBallsCanvas technologies={technologies} height={360} />
+        </div>
+      </motion.div>
+
+      <motion.div variants={textVariant()} className="mt-24">
         <p className={styles.sectionSubText}>My work</p>
         <h2 className={styles.sectionHeadText}>Projects.</h2>
       </motion.div>
 
-      <div className="w-full flex">
-        <motion.p
-          variants={fadeIn("", "", 0.1, 1)}
-          className="mt-3 text-secondary text-[17px] max-w-3xl leading-[30px] "
-        >
-          I possess a diverse portfolio of projects that demonstrate my skills
-          and experience in solving real-world problems. Each project is
-          succinctly described and includes links to code repositories. These
-          examples showcase my ability to handle complex challenges, work with
-          different technologies, and effectively manage projects.
-        </motion.p>
-      </div>
+      <motion.p
+        variants={fadeIn("", "", 0.25, 1)}
+        className="mt-3 text-secondary text-[17px] max-w-3xl leading-[30px]"
+      >
+        I possess a diverse portfolio of projects that demonstrate my skills and
+        experience in solving real-world problems. Each project is succinctly
+        described and includes links to code repositories. These examples
+        showcase my ability to handle complex challenges, work with different
+        technologies, and effectively manage projects.
+      </motion.p>
 
       {/* Responsive auto-fit grid:
           - Uses minmax(280px,1fr) so cards wrap once they'd shrink below ~280px
@@ -152,7 +175,7 @@ const Works = () => {
       */}
       <div
         ref={gridRef}
-        className="mt-20 w-full grid gap-7 items-stretch grid-cols-[repeat(auto-fit,minmax(280px,1fr))]"
+        className="mt-16 w-full grid gap-7 items-stretch grid-cols-[repeat(auto-fit,minmax(280px,1fr))]"
       >
         {projects.map((project, index) => (
           <ProjectCard

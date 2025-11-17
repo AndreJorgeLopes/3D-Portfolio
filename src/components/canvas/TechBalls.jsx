@@ -39,7 +39,7 @@ const Ball = React.memo(({ imgUrl, position, mouseXRef, active, scale }) => {
   );
 });
 
-const TechBallsCanvas = ({ technologies }) => {
+const TechBallsCanvas = ({ technologies, height = 400 }) => {
   const mouseXRef = React.useRef(0);
   const containerRef = React.useRef(null);
   const inViewRef = React.useRef(true); // Use ref instead of state to prevent re-render
@@ -185,13 +185,17 @@ const TechBallsCanvas = ({ technologies }) => {
   }, [technologies, ballScale]);
 
   return (
-    <div ref={containerRef} className="w-full h-[400px]">
+    <div
+      ref={containerRef}
+      className="relative w-full"
+      style={{ height: typeof height === "number" ? `${height}px` : height }}
+    >
       <ModelCanvas
         key="tech-balls-canvas"
         workerName="techBallsCanvasWorker"
         continuousAnimation
         cameraProps={{ position: [0, 0, 12], fov: 45 }}
-        containerClassName="w-full h-[400px]"
+        containerClassName="w-full h-full"
         canvasProps={{
           gl: {
             preserveDrawingBuffer: false,

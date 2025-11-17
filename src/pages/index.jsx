@@ -5,7 +5,6 @@ import {
   Experience,
   Hero,
   Navbar,
-  Tech,
   Works,
   GithubContributions,
 } from "../components";
@@ -33,7 +32,6 @@ const Home = () => {
         </div>
         <About />
         <Experience />
-        <Tech />
         <Works />
         <GithubContributions />
         <Contact />
